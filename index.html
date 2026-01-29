@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tdesign-icons@0.4.2/dist/iconfont.css">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- AntV G2 图表库 -->
-    <script src="https://cdn.jsdelivr.net/npm/@antv/g2@5"></script>
+    <!-- D3.js 图表库 -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
             font-family: 'Source Han Sans SC', 'Noto Sans SC', sans-serif;
@@ -449,34 +449,100 @@
                 { skill: 'UI/UX', value: 80 }
             ];
             
-            const chart = new G2.Chart({
-                container: 'skillRadar',
-                autoFit: true,
-                height: 300,
-                padding: [20, 20, 20, 20]
-            });
+            const container = document.getElementById('skillRadar');
+            const width = container.clientWidth;
+            const height = 300;
+            const radius = Math.min(width, height) / 2 - 20;
             
-            chart.coordinate('polar', {
-                radius: 0.8
-            });
+            // 清除容器
+            d3.select('#skillRadar').selectAll('*').remove();
             
-            chart.scale('value', {
-                min: 0,
-                max: 100,
-                nice: true
-            });
+            // 创建 SVG
+            const svg = d3.select('#skillRadar')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', `translate(${width/2}, ${height/2})`);
             
-            chart.tooltip({
-                formatter: (datum) => {
-                    return { name: datum.skill, value: `${datum.value}%` };
+            // 创建角度比例尺
+            const angleScale = d3.scaleBand()
+                .domain(data.map(d => d.skill))
+                .range([0, 2 * Math.PI]);
+            
+            // 创建半径比例尺
+            const radiusScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range([0, radius]);
+            
+            // 创建雷达线生成器
+            const lineGenerator = d3.lineRadial()
+                .angle(d => angleScale(d.skill))
+                .radius(d => radiusScale(d.value))
+                .curve(d3.curveLinearClosed);
+            
+            // 添加网格线
+            for (let i = 0; i <= 5; i++) {
+                const r = (radius / 5) * i;
+                svg.append('circle')
+                    .attr('r', r)
+                    .attr('fill', 'none')
+                    .attr('stroke', '#e8e8e8')
+                    .attr('stroke-width', 1);
+                
+                if (i > 0) {
+                    svg.append('text')
+                        .attr('x', 5)
+                        .attr('y', -r)
+                        .attr('text-anchor', 'start')
+                        .attr('dominant-baseline', 'middle')
+                        .attr('font-size', '12px')
+                        .attr('fill', '#999')
+                        .text(`${i * 20}%`);
                 }
+            }
+            
+            // 添加轴线
+            data.forEach(d => {
+                const angle = angleScale(d.skill);
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                
+                svg.append('line')
+                    .attr('x1', 0)
+                    .attr('y1', 0)
+                    .attr('x2', x)
+                    .attr('y2', y)
+                    .attr('stroke', '#e8e8e8')
+                    .attr('stroke-width', 1);
+                
+                svg.append('text')
+                    .attr('x', Math.cos(angle) * (radius + 15))
+                    .attr('y', Math.sin(angle) * (radius + 15))
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('font-size', '12px')
+                    .attr('fill', '#666')
+                    .text(d.skill);
             });
             
-            chart.line().position('skill*value').color('#1890ff').size(2).shape('smooth');
-            chart.point().position('skill*value').color('#1890ff').size(4);
-            chart.area().position('skill*value').color('l(90) 0:#1890ff 1:rgba(24, 144, 255, 0.1)');
+            // 添加雷达区域
+            svg.append('path')
+                .datum(data)
+                .attr('d', lineGenerator)
+                .attr('fill', 'rgba(24, 144, 255, 0.2)')
+                .attr('stroke', '#1890ff')
+                .attr('stroke-width', 2);
             
-            chart.render();
+            // 添加数据点
+            svg.selectAll('dot')
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr('cx', d => Math.cos(angleScale(d.skill)) * radiusScale(d.value))
+                .attr('cy', d => Math.sin(angleScale(d.skill)) * radiusScale(d.value))
+                .attr('r', 4)
+                .attr('fill', '#1890ff');
         }
         
         // 初始化技能柱状图
@@ -489,42 +555,78 @@
                 { skill: 'Webpack/Git', value: 85 }
             ];
             
-            const chart = new G2.Chart({
-                container: 'skillBar',
-                autoFit: true,
-                height: 300,
-                padding: [20, 20, 40, 60]
-            });
+            const container = document.getElementById('skillBar');
+            const width = container.clientWidth;
+            const height = 300;
+            const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
             
-            chart.data(data);
-            chart.scale('value', {
-                min: 0,
-                max: 100,
-                nice: true
-            });
+            // 清除容器
+            d3.select('#skillBar').selectAll('*').remove();
             
-            chart.tooltip({
-                formatter: (datum) => {
-                    return { name: datum.skill, value: `${datum.value}%` };
-                }
-            });
+            // 创建 SVG
+            const svg = d3.select('#skillBar')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
             
-            chart.axis('skill', {
-                label: {
-                    autoRotate: true
-                }
-            });
+            // 创建 x 轴比例尺
+            const xScale = d3.scaleBand()
+                .domain(data.map(d => d.skill))
+                .range([0, innerWidth])
+                .padding(0.3);
             
-            chart.interaction('element-active');
+            // 创建 y 轴比例尺
+            const yScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range([innerHeight, 0]);
             
-            chart.interval().position('skill*value')
-                .color('#1890ff')
-                .label('value', {
-                    position: 'top',
-                    formatter: (datum) => `${datum}%`
-                });
+            // 添加 x 轴
+            svg.append('g')
+                .attr('transform', `translate(0, ${innerHeight})`)
+                .call(d3.axisBottom(xScale))
+                .selectAll('text')
+                .attr('transform', 'rotate(-45)')
+                .attr('text-anchor', 'end')
+                .attr('font-size', '12px');
             
-            chart.render();
+            // 添加 y 轴
+            svg.append('g')
+                .call(d3.axisLeft(yScale).ticks(5).tickFormat(d => `${d}%`))
+                .selectAll('text')
+                .attr('font-size', '12px');
+            
+            // 添加柱状图
+            const bars = svg.selectAll('bar')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('x', d => xScale(d.skill))
+                .attr('y', innerHeight)
+                .attr('width', xScale.bandwidth())
+                .attr('height', 0)
+                .attr('fill', '#1890ff');
+            
+            // 添加动画效果
+            bars.transition()
+                .duration(1000)
+                .attr('y', d => yScale(d.value))
+                .attr('height', d => innerHeight - yScale(d.value));
+            
+            // 在柱子顶部添加数值
+            svg.selectAll('label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('x', d => xScale(d.skill) + xScale.bandwidth() / 2)
+                .attr('y', d => yScale(d.value) - 10)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .attr('fill', '#666')
+                .text(d => `${d.value}%`);
         }
     </script>
 </body>
