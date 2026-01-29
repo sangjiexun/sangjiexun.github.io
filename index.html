@@ -450,7 +450,10 @@
             ];
             
             const container = document.getElementById('skillRadar');
-            const width = container.clientWidth;
+            if (!container) return;
+            
+            // 设置默认宽度，以防容器还未渲染
+            const width = container.clientWidth || 400;
             const height = 300;
             const radius = Math.min(width, height) / 2 - 20;
             
@@ -556,7 +559,10 @@
             ];
             
             const container = document.getElementById('skillBar');
-            const width = container.clientWidth;
+            if (!container) return;
+            
+            // 设置默认宽度，以防容器还未渲染
+            const width = container.clientWidth || 400;
             const height = 300;
             const margin = { top: 20, right: 20, bottom: 60, left: 60 };
             const innerWidth = width - margin.left - margin.right;
