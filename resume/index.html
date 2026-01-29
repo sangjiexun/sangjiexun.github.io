@@ -1281,10 +1281,10 @@
                         <li>可线下展示</li>
                     </ul>
                 </div>
-                <div class="timeline-item project-item" data-date="2016.1-至今">
+                <div class="timeline-item project-item" data-date="2022.1-至今">
                     <div class="flex justify-between items-center mb-1">
                         <h3 class="font-semibold text-lg">敏捷开发项目管理系统</h3>
-                        <span class="text-sm text-gray-500">2016.1 - 至今</span>
+                        <span class="text-sm text-gray-500">2022.1 - 至今</span>
                     </div>
                     <p class="text-gray-600 mb-2">开源项目</p>
                     <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
@@ -2371,11 +2371,15 @@
                 }, 300);
             });
             
-            // 初始化技能雷达图（默认中文）
-            initSkillRadar('zh');
+            // 检测当前语言并初始化图表
+            const activeLangBtn = document.querySelector('.language-btn.active');
+            const currentLang = activeLangBtn && activeLangBtn.textContent === 'English' ? 'en' : 'zh';
             
-            // 初始化技能柱状图（默认中文）
-            initSkillBar('zh');
+            // 初始化技能雷达图
+            initSkillRadar(currentLang);
+            
+            // 初始化技能柱状图
+            initSkillBar(currentLang);
         });
         
         // 初始化技能雷达图 - 使用纯SVG
@@ -2538,7 +2542,8 @@
             
             const data = lang === 'zh' ? dataZh : dataEn;
             
-            const container = document.getElementById('skillBar');
+            const containerId = lang === 'zh' ? 'skillBar' : 'skillBarEn';
+            const container = document.getElementById(containerId);
             if (!container) return;
             
             const width = container.clientWidth || 400;
