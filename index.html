@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tdesign-icons@0.4.2/dist/iconfont.css">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- AntV G2 图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/@antv/g2@5"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
         
@@ -297,6 +299,19 @@
                 <i class="td-icon td-icon-certificate"></i>
                 技能证书
             </h2>
+            
+            <!-- 技能可视化图表 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h3 class="font-semibold mb-3">技术栈雷达图</h3>
+                    <div id="skillRadar" style="height: 300px;"></div>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-3">技能水平分布</h3>
+                    <div id="skillBar" style="height: 300px;"></div>
+                </div>
+            </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <h3 class="font-semibold mb-3">专业技能</h3>
@@ -411,7 +426,102 @@
                     progress.style.width = width;
                 }, 300);
             });
+            
+            // 初始化技能雷达图
+            initSkillRadar();
+            
+            // 初始化技能柱状图
+            initSkillBar();
         });
+        
+        // 初始化技能雷达图
+        function initSkillRadar() {
+            const data = [
+                { skill: 'HTML/CSS/JS', value: 95 },
+                { skill: 'React/Vue', value: 90 },
+                { skill: 'TypeScript', value: 85 },
+                { skill: 'Node.js', value: 80 },
+                { skill: 'Webpack/Git', value: 85 },
+                { skill: 'UI/UX', value: 80 }
+            ];
+            
+            const chart = new G2.Chart({
+                container: 'skillRadar',
+                autoFit: true,
+                height: 300,
+                padding: [20, 20, 20, 20]
+            });
+            
+            chart.coordinate('polar', {
+                radius: 0.8
+            });
+            
+            chart.scale('value', {
+                min: 0,
+                max: 100,
+                nice: true
+            });
+            
+            chart.tooltip({
+                formatter: (datum) => {
+                    return { name: datum.skill, value: `${datum.value}%` };
+                }
+            });
+            
+            chart.line().position('skill*value').color('#1890ff').size(2).shape('smooth');
+            chart.point().position('skill*value').color('#1890ff').size(4);
+            chart.area().position('skill*value').color('l(90) 0:#1890ff 1:rgba(24, 144, 255, 0.1)');
+            
+            chart.render();
+        }
+        
+        // 初始化技能柱状图
+        function initSkillBar() {
+            const data = [
+                { skill: 'HTML/CSS/JS', value: 95 },
+                { skill: 'React/Vue', value: 90 },
+                { skill: 'TypeScript', value: 85 },
+                { skill: 'Node.js', value: 80 },
+                { skill: 'Webpack/Git', value: 85 }
+            ];
+            
+            const chart = new G2.Chart({
+                container: 'skillBar',
+                autoFit: true,
+                height: 300,
+                padding: [20, 20, 40, 60]
+            });
+            
+            chart.data(data);
+            chart.scale('value', {
+                min: 0,
+                max: 100,
+                nice: true
+            });
+            
+            chart.tooltip({
+                formatter: (datum) => {
+                    return { name: datum.skill, value: `${datum.value}%` };
+                }
+            });
+            
+            chart.axis('skill', {
+                label: {
+                    autoRotate: true
+                }
+            });
+            
+            chart.interaction('element-active');
+            
+            chart.interval().position('skill*value')
+                .color('#1890ff')
+                .label('value', {
+                    position: 'top',
+                    formatter: (datum) => `${datum}%`
+                });
+            
+            chart.render();
+        }
     </script>
 </body>
 </html>
