@@ -1,0 +1,2675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人简历</title>
+    <!-- TDesign 样式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tdesign@1.65.1/dist/tdesign.min.css">
+    <!-- 字体图标 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tdesign-icons@0.4.2/dist/iconfont.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- D3.js 图表库 -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: 'Source Han Sans SC', 'Noto Sans SC', sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .resume-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            color: white;
+            padding: 40px;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .section {
+            padding: 30px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1890ff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 25px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #1890ff;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 13px;
+            top: 14px;
+            width: 2px;
+            height: calc(100% + 10px);
+            background-color: #e8e8e8;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .skill-bar {
+            height: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background-color: #1890ff;
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-3px);
+        }
+        
+        .social-icon.github {
+            background-color: #333;
+        }
+        
+        .social-icon.linkedin {
+            background-color: #0077b5;
+        }
+        
+        .social-icon.email {
+            background-color: #ea4335;
+        }
+        
+        .social-icon.twitter {
+            background-color: #1da1f2;
+        }
+        
+        .social-icon.website {
+            background-color: #0066cc;
+        }
+        
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .language-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background-color: white;
+            color: #1890ff;
+            border: 1px solid #1890ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .language-btn.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        
+        .language-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+        }
+        
+        .content-zh, .content-en {
+            transition: opacity 0.3s ease;
+        }
+        
+        .content-en {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .resume-container {
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .language-switcher {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .language-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 语言切换器 -->
+    <div class="language-switcher">
+        <button class="language-btn active" onclick="switchLanguage('zh')">中文</button>
+        <button class="language-btn" onclick="switchLanguage('en')">English</button>
+    </div>
+    
+    <div class="resume-container mt-8 mb-8">
+        <!-- 头部信息 -->
+        <div class="header flex flex-col items-center">
+            <img src="avatar.jpg" alt="头像" class="avatar mb-4">
+            <div class="content-zh">
+                <h1 class="text-3xl font-bold mb-2">桑杰逊</h1>
+                <p class="text-lg opacity-90 mb-4">AI大模型产品经理 / AI大模型技术经理</p>
+            </div>
+            <div class="content-en">
+                <h1 class="text-3xl font-bold mb-2">Sang Jiexun (Jason Sang)</h1>
+                <p class="text-lg opacity-90 mb-4">AI Large Model Product Manager / Technical Manager</p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="https://github.com/sangjiexun" class="social-icon github" target="_blank" title="GitHub">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+                <a href="https://twitter.com/sangjiexun" class="social-icon twitter" target="_blank" title="Twitter">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </a>
+                <a href="https://sangjiexun.github.io" class="social-icon website" target="_blank" title="Website">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="2" y1="12" x2="22" y2="12"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                </a>
+                <a href="mailto:1009900122@qq.com" class="social-icon email" title="Email">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 个人信息 -->
+        <div class="section">
+            <div class="content-zh">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-user-circle"></i>
+                    个人信息
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-phone mr-2 text-gray-500"></i>
+                            <span>13354281998</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-mail mr-2 text-gray-500"></i>
+                            <span>1009900122@qq.com</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-map-marker mr-2 text-gray-500"></i>
+                            <span>1990.09</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.329-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89l-.006-.033zm-2.634 2.588c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/>
+                            </svg>
+                            <span>微信: bitchatgpt</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-user-circle mr-2 text-gray-500"></i>
+                            <span>MBTI: INFJ</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-location mr-2 text-gray-500"></i>
+                            <span>目标工作地:大连、广东、杭州、深圳、成都、长沙</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-github mr-2 text-gray-500"></i>
+                            <span>薪资：只求价值认同</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-location mr-2 text-gray-500"></i>
+                            <span>目标岗位：AI产品经理、AI解决方案工程师</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="content-en">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-user-circle"></i>
+                    Personal Information
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-phone mr-2 text-gray-500"></i>
+                            <span>13354281998</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-mail mr-2 text-gray-500"></i>
+                            <span>1009900122@qq.com</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-map-marker mr-2 text-gray-500"></i>
+                            <span>Dalian, China (Currently in Tokyo, Japan)</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-green-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.329-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89l-.006-.033zm-2.634 2.588c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/>
+                            </svg>
+                            <span>bitchatgpt</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-github mr-2 text-gray-500"></i>
+                            <span>sangjiexun</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-user-circle mr-2 text-gray-500"></i>
+                            <span>MBTI: INFJ</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="flex items-center">
+                            <i class="td-icon td-icon-link mr-2 text-gray-500"></i>
+                            <span>https://sangjiexun.github.io</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 自我介绍 -->
+        <div class="section">
+            <div class="content-zh">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-comment"></i>
+                    自我介绍
+                </h2>
+               
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    我叫桑杰逊，英文名是Jason Sang，来自中国的开发者，专注于构建高质量的数字产品——从AI代理和自动化系统到完整的Web、移动和区块链生态系统。通过智能、高效和可扩展的解决方案帮助企业更快发展。
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    个人信念：崇尚长期主义，崇尚以道统思维进行内圣外王的信念系统构建。并运用在日常的学习和工作中。目前在独立开发产品有：
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    1. 灵境MCP智能AI镜子（边缘人机交互终端，解决容貌焦虑的问题，软件和嵌入式设备已经实现联调），展示网址，可线下展示。
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    2. 智能体RAG-NoteBook，将作为线下AI讲学的一套教具呈现出来，让学生能够轻松掌握"最小"尺度的向量查询笔记系统开发，可线下展示。
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    3. 飞书第一批用户，坚持用飞书进行敏捷团队开发与项目管理，并自有敏捷开发项目管理系统开发开源项目：<a href="https://gitee.com/wulon/mk-teamwork-server" target="_blank" class="text-blue-600 hover:text-blue-800 underline">https://gitee.com/wulon/mk-teamwork-server</a>（600+ star）
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    业务能力：负责大模型在公司内部多个业务场景的应用和优化工作，面向工作流（Dify、Coze、FastFlow、n8n）、RAG（RAGFlow、阿里云百炼平台）、Agent（自主构建智能体）、向量知识库搭建（milvus）、对提示词优化（清单化、语义模式、任务模型）、MCP（C/S端开发）等落地实践有着丰富经验。
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    开发能力：JAVA、Python（Flask、FastAPI）、JS/TS（React、VUE）、AI大模型框架LangChain为主，使用Qwen变体进行日常调用，也使用OpenAi标准协议进行AIGC图片、视频等制作，如Nanobanna、Sora2。掌握AI漫剧的深度玩法，能够快速搭建AI漫剧团队。
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    VibeCoding工具：能够熟练使用Cursor、Kiro、OpenCode、Agent Skills、clawbot进行日常VibeCoding协助，以及内容产出。
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    设计工具：能够熟练使用Figma、MasterGo、Adobe全家桶进行UI/UX设计、业务流程图、产品原型、UML图等设计。
+                </p>
+            </div>
+            <div class="content-en">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-comment"></i>
+                    Self Introduction
+                </h2>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    My name is Sang Jiexun, English name is Jason Sang. I'm a developer from China focused on building high-quality digital products — from AI agents and automation systems to complete web, mobile, and blockchain ecosystems. I help businesses move faster with smart, efficient, and scalable solutions.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    Personal Beliefs: Advocate long-termism, advocate the construction of a belief system of internal sage and external king with Daoist thinking. And apply it in daily study and work. Currently independently developing products:
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    1. Lingjing MCP Smart AI Mirror (Edge Human-Computer Interaction Terminal, solving appearance anxiety issues, software and embedded devices have completed joint debugging), demonstration website available for offline display.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    2. Agent RAG-NoteBook, will be presented as a teaching tool for offline AI training, allowing students to easily master "minimum" scale vector query notebook system development, available for offline display.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    3. Feishu (Lark) early user, adhering to Feishu for agile team development and project management, with self-developed agile development project management system open source project: <a href="https://gitee.com/wulon/mk-teamwork-server" target="_blank" class="text-blue-600 hover:text-blue-800 underline">https://gitee.com/wulon/mk-teamwork-server</a> (600+ stars)
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    Business Capabilities: Responsible for the application and optimization of large models in multiple business scenarios within the company, with rich experience in workflow (Dify, Coze, FastFlow, n8n), RAG (RAGFlow, Alibaba Cloud Bailian Platform), Agent (self-built agents), vector knowledge base construction (milvus), prompt optimization (checklisting, semantic patterns, task models), MCP (C/S development), etc.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    Development Skills: Mainly JAVA, Python (Flask, FastAPI), JS/TS (React, Vue), AI large model framework LangChain, using Qwen variants for daily calls, and also using OpenAI standard protocols for AIGC image, video production, such as Nanobanna, Sora2. Master the deep gameplay of AI manga, able to quickly build an AI manga team.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    VibeCoding Tools: Skilled in using Cursor, Kiro, OpenCode, Agent Skills, clawbot for daily VibeCoding assistance and content production.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    Design Tools: Skilled in using Figma, MasterGo, Adobe Creative Cloud for UI/UX design, business process diagrams, product prototypes, UML diagrams, and other design work.
+                </p>
+            </div>
+        </div>
+        
+        <!-- 工作经历 -->
+        <div class="section">
+            <div class="content-zh">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-briefcase"></i>
+                    工作经历
+                </h2>
+                <div class="timeline-item project-item" data-date="2026.1-至今">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">北京ESG研究院</h3>
+                        <span class="text-sm text-gray-500">2026.1 - 至今</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">网站综合开发合同 2期 GEO项目负责人（远程接单）</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>负责GEO系统的搭建，对数据的出入口进行大模型过滤，并通过数据流进行驱动</li>
+                        <li>工作流为自己开发，基于Nuxt.js项目改造</li>
+                        <li>前端: Vue 3.5.23 + Nuxt 4.2.1 + TypeScript + Tailwind CSS</li>
+                        <li>后端: Node.js + Express + TypeScript + SQLite + Redis</li>
+                        <li>服务: 4个核心微服务，统一代理路由实现</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2016.1-至今">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大连AI社群</h3>
+                        <span class="text-sm text-gray-500">2016.1 - 至今</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">运营建设活动负责人</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>负责大连AI社群运营建设活动，定期组织线下沙龙活动</li>
+                        <li>从提示词目前讲到Agent-Skills</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025.11">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">台湾全家好卖</h3>
+                        <span class="text-sm text-gray-500">2025.11 - 2026.1</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">订单配送门店配给系统开发（远程接单）</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>负责LBS系统地理GIS系统的搭建，完成全台南北地区全家便利商店（FamilyMart）的配货订单地理定位</li>
+                        <li>负责人力管理系统AI+GPS打卡签到，人效管理系统开发</li>
+                        <li>负责中央厨房配送系统AI分析功能设计，通过提示词驱动对货品的动态规划及预警</li>
+                        <li>技术栈: FireBase</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">北京ESG研究院</h3>
+                        <span class="text-sm text-gray-500">2024.1 - 2025.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">网站综合开发合同 1期 官网项目负责人（远程接单）</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>负责基于Java SpringBoot项目官网的搭建，并负责SEO优化矩阵技术落地实现</li>
+                        <li>3个月提高了全网权重，北京ESG做到第一</li>
+                        <li>解决了镜像站攻击以及反爬虫等安全问题</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024.10-至今">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大连浑元数据</h3>
+                        <span class="text-sm text-gray-500">2024.10 - 至今</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI数据工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>主要负责：对线上线下业务的数据采集、标注、数据挖掘，根据规范对相关数据资产进行建模。对数据识别、分类进行机器学习、深度学习。并结合视觉、语义理解大模型及框架增加AI任务的准确性和鲁棒性。</li>
+                        <li>参与软件平台开发：区块链金融、区块链供应链、微信小程序等相关业务开发。</li>
+                        <li>制定本地大模型部署及工作流方案，覆盖ConfyUI+Stable Diffusion图像生成、TensorFlow微调、PyTorch人格数据挖掘。</li>
+                        <li>独立完成AI测评小程序（SpringBoot+Vue）、皮纹心理学数据建模（YOLO+CNN）、爬虫数据分析系统（Python+DeepSeek）。</li>
+                        <li>开发爆款文章热点拟合算法，通过用户画像+内容特征+召回+排序的全链路优化，提升内容推荐准确率30%以上。</li>
+                        <li>研究分布发布矩阵，实现多平台内容智能分发，提高跨平台曝光率和用户参与度。</li>
+                        <li>线上实施要点：</li>
+                        <li>1. 数据管道：Kafka/Flink实时写入日志，T+1做离线训练。</li>
+                        <li>2. 服务层：gRPC/HTTP服务封装模型，支持多版本灰度。</li>
+                        <li>3. 弹性伸缩：根据QPS自动扩缩容，保证延迟指标。</li>
+                        <li>4. 合规与安全：敏感内容实时过滤，违规账号限流。</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024.05">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">江苏中车数字科技有限公司（大连分公司）</h3>
+                        <span class="text-sm text-gray-500">2024.05 - 2024.09</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">业务工程师 / 产品经理</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>主要负责：产品原型设计、业务顶层设计、可行性方案设计。</li>
+                        <li>参与制定：MOM平台、CRM平台、MES平台功能部件设计。负责沈阳中车供应链与大连旅顺中车电力牵引部项目。</li>
+                        <li>使用SpringBoot+MyBatis+Vue3开发低代码平台业务模块，涵盖供应商管理与SAP接口分析。</li>
+                        <li>主导智能工业网关开发，提升现场设备数据实时性。</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.04">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大连光洋科技集团</h3>
+                        <span class="text-sm text-gray-500">2020.04 - 2024.04</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">软件开发工程师 / 数据采集组组长（管理7人团队）</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>主要负责：智能制造产线环节的数据治理，并主导开发BI数字化车间看板与生产订单与物料的数据资产平台研发。</li>
+                        <li>参与研发：数据采集标准化协议改造；公司MES平台研发；主导研发：边缘网关与机加工刀具管理平台。</li>
+                        <li>领导7人团队（含机电一体化、测试、实施人员），负责智能制造产线数据治理，主导BI数字化车间看板与生产订单/物料数据资产平台研发。</li>
+                        <li>参与国家高精专项《高档数控机床与基础制造装备》（课题编号：2018ZX04035-001），合作西工大、北京仪综所、沈阳航天等单位，获得项目奖金。</li>
+                        <li>获得1项OPC UA服务器相关国家发明专利，通过北京仪综所论证。</li>
+                        <li>实现分布式机床大数据采集（StreamPipes+MQ+OPC UA，覆盖10台五轴加工中心）。</li>
+                        <li>主导刀具管理平台（TMS低代码开发，2个月独立完成），涵盖生命周期管理、RFID读写、DNC系统衔接。</li>
+                        <li>开发多项视觉识别项目（OpenCV边缘检测、YOLO盘库、Zoller刀具自动识别插件、机器人视觉标定）。</li>
+                        <li>负责DNC/MES/FMS/WMS/PLM系统核心模块开发，实现文件追溯、工艺流程可视化、电子会签等功能。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="content-en">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-briefcase"></i>
+                    Work Experience
+                </h2>
+                <div class="timeline-item project-item" data-date="2026.1-Present">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Beijing ESG Research Institute</h3>
+                        <span class="text-sm text-gray-500">2026.1 - Present</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Website Comprehensive Development Contract Phase 2 - GEO Project Leader (Remote)</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Responsible for building the GEO system, filtering data entry/exit with large models, and driving through data flow</li>
+                        <li>Workflow developed by myself, based on Nuxt.js project transformation</li>
+                        <li>Frontend: Vue 3.5.23 + Nuxt 4.2.1 + TypeScript + Tailwind CSS</li>
+                        <li>Backend: Node.js + Express + TypeScript + SQLite + Redis</li>
+                        <li>Services: 4 core microservices with unified proxy routing implementation</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2016.1-Present">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dalian AI Community</h3>
+                        <span class="text-sm text-gray-500">2016.1 - Present</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Operation and Construction Activity Leader</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Responsible for Dalian AI community operation and construction activities, regularly organizing offline salon activities</li>
+                        <li>From prompt engineering to Agent-Skills</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025.11">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Taiwan FamilyMart</h3>
+                        <span class="text-sm text-gray-500">2025.11 - 2026.1</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Order Delivery Store Distribution System Development (Remote)</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Responsible for building LBS geographic GIS system, completing geographic positioning of delivery orders for FamilyMart convenience stores across Taiwan</li>
+                        <li>Responsible for AI+GPS check-in system for human resource management, and efficiency management system development</li>
+                        <li>Responsible for AI analysis function design of central kitchen distribution system, dynamic planning and early warning of goods driven by prompts</li>
+                        <li>Tech stack: FireBase</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Beijing ESG Research Institute</h3>
+                        <span class="text-sm text-gray-500">2024.1 - 2025.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Website Comprehensive Development Contract Phase 1 - Official Website Project Leader (Remote)</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Responsible for building the official website based on Java SpringBoot project, and responsible for SEO optimization matrix technology implementation</li>
+                        <li>Increased overall network weight in 3 months, making Beijing ESG rank first</li>
+                        <li>Solved mirror site attacks and anti-crawler security issues</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024.10-Present">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dalian Hunyuan Data</h3>
+                        <span class="text-sm text-gray-500">2024.10 - Present</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI Data Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Mainly responsible for: data collection, annotation, and data mining for online and offline business, modeling relevant data assets according to specifications. Performing machine learning and deep learning for data recognition and classification. Combining visual and semantic understanding large models and frameworks to increase AI task accuracy and robustness.</li>
+                        <li>Participating in software platform development: blockchain finance, blockchain supply chain, WeChat mini-program and other related business development.</li>
+                        <li>Developing local large model deployment and workflow solutions, covering ConfyUI+Stable Diffusion image generation, TensorFlow fine-tuning, PyTorch personality data mining.</li>
+                        <li>Independently completed AI evaluation mini-program (SpringBoot+Vue), dermatoglyphics psychology data modeling (YOLO+CNN), crawler data analysis system (Python+DeepSeek).</li>
+                        <li>Developed hot article fitting algorithm, through end-to-end optimization of user portrait + content features + recall + ranking, improved content recommendation accuracy by more than 30%.</li>
+                        <li>Researched distributed publishing matrix, realized multi-platform content intelligent distribution, improved cross-platform exposure and user engagement.</li>
+                        <li>Online implementation points:</li>
+                        <li>1. Data pipeline: Kafka/Flink real-time writing logs, T+1 offline training.</li>
+                        <li>2. Service layer: gRPC/HTTP service encapsulation model, supporting multi-version grayscale.</li>
+                        <li>3. Elastic scaling: Automatic scaling based on QPS, ensuring latency indicators.</li>
+                        <li>4. Compliance and security: Real-time filtering of sensitive content, rate limiting for violating accounts.</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024.05">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Jiangsu CRRC Digital Technology Co., Ltd. (Dalian Branch)</h3>
+                        <span class="text-sm text-gray-500">2024.05 - 2024.09</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Business Engineer / Product Manager</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Mainly responsible for: product prototype design, business top-level design, feasibility solution design.</li>
+                        <li>Participating in formulation: MOM platform, CRM platform, MES platform functional component design. Responsible for Shenyang CRRC supply chain and Dalian Lvshun CRRC electric traction department projects.</li>
+                        <li>Using SpringBoot+MyBatis+Vue3 to develop low-code platform business modules, covering supplier management and SAP interface analysis.</li>
+                        <li>Leading intelligent industrial gateway development, improving on-site equipment data real-time performance.</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.04">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dalian Guangyang Technology Group</h3>
+                        <span class="text-sm text-gray-500">2020.04 - 2024.04</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Software Development Engineer / Data Collection Team Leader (Managing 7-person team)</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Mainly responsible for: data governance in intelligent manufacturing production line links, and leading development of BI digital workshop dashboard and production order and material data asset platform R&D.</li>
+                        <li>Participating in R&D: data collection standardization protocol transformation; company MES platform R&D; leading R&D: edge gateway and machining tool management platform.</li>
+                        <li>Leading 7-person team (including electromechanical integration, testing, implementation personnel), responsible for intelligent manufacturing production line data governance, leading BI digital workshop dashboard and production order/material data asset platform R&D.</li>
+                        <li>Participating in national high-precision special project "High-grade CNC Machine Tools and Basic Manufacturing Equipment" (Project No.: 2018ZX04035-001), cooperating with NWPU, Beijing Instrument Research Institute, Shenyang Aerospace and other units, receiving project bonus.</li>
+                        <li>Obtained 1 national invention patent related to OPC UA server, certified by Beijing Instrument Research Institute.</li>
+                        <li>Implemented distributed machine tool big data collection (StreamPipes+MQ+OPC UA, covering 10 five-axis machining centers).</li>
+                        <li>Leading tool management platform (TMS low-code development, independently completed in 2 months), covering lifecycle management, RFID reading/writing, DNC system connection.</li>
+                        <li>Developed multiple visual recognition projects (OpenCV edge detection, YOLO inventory, Zoller tool automatic recognition plugin, robot vision calibration).</li>
+                        <li>Responsible for DNC/MES/FMS/WMS/PLM system core module development, implementing file traceability, process visualization, electronic signature and other functions.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 项目经验 -->
+        <div class="section">
+            <div class="content-zh">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-project"></i>
+                    项目经验
+                </h2>
+                <div class="flex justify-end mb-4">
+                    <button onclick="sortProjects('zh', 'desc')" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">最新优先</button>
+                    <button onclick="sortProjects('zh', 'asc')" class="px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600">最早优先</button>
+                </div>
+                <div id="project-list-zh">
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">本地大模型部署及工作流方案</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI特征数据工程师 | 大连浑元数据</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: PyTorch + TensorFlow + Docker + 工作流管道</li>
+                        <li>功能: 本地大模型部署、工作流规划、模型隔离与资源调度、多任务并行与自动重试</li>
+                        <li>解决问题: 企业数据隐私与合规要求高，云端部署存在延迟与安全风险；实现本地硬件稳定运行，降低推理延迟</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">图像生成模型训练系统</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI特征数据工程师 | 大连浑元数据</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: ComfyUI + Stable Diffusion + LoRA微调</li>
+                        <li>功能: 图像生成模型训练、扩散过程参数优化、采样策略优化</li>
+                        <li>解决问题: 通用模型在特定领域生成质量不稳定；通过领域适应训练提升图像一致性与细节保真度</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大模型微调训练方案</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI特征数据工程师 | 大连浑元数据</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: TensorFlow + 模型微调</li>
+                        <li>功能: 大模型微调、模型优化、性能调优</li>
+                        <li>解决问题: 大模型在特定任务上表现不佳；通过微调提升模型在特定领域的表现</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">人格数据挖掘系统</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI特征数据工程师 | 大连浑元数据</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: PyTorch + Pandas + NumPy + 多层神经网络 + 注意力机制</li>
+                        <li>功能: 人格数据挖掘、特征工程、序列数据预处理、高精度分类与预测</li>
+                        <li>解决问题: 非结构化人格数据特征提取困难；实现高精度分类与预测，提升心理学数据分析的准确性与可解释性</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">皮纹心理学数据建模</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI特征数据工程师 | 大连浑元数据</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: YOLO + CNN神经网络 + Python + PyTorch</li>
+                        <li>功能: 皮纹图像特征提取、分类识别、心理学数据建模</li>
+                        <li>解决问题: 皮纹图像特征复杂、标注成本高；通过深度学习技术提升识别准确率，实现自动化特征识别</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">AI测评小程序</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI特征数据工程师 | 大连浑元数据</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: SpringBoot + Vue + 模型推理接口</li>
+                        <li>功能: AI能力测评、数据分析、用户管理、实时评估</li>
+                        <li>解决问题: 传统测评流程手动且低效；实现自动化在线评估，提升用户体验与数据收集效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">爬虫数据分析系统</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI特征数据工程师 | 大连浑元数据</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Python + DeepSeek R1 + Pandas</li>
+                        <li>功能: 数据爬取、语义分析、结构化输出、智能过滤</li>
+                        <li>解决问题: 大规模数据获取困难且噪声高；实现高效爬取与智能过滤，提供高质量训练数据源</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">MES系统核心业务接口API开发</h3>
+                        <span class="text-sm text-gray-500">2024</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">驻场业务工程师 | 江苏中车 沈阳航天</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: SpringCloud + Vue + MasterGo</li>
+                        <li>功能: MES系统核心业务接口API开发、业务原理原型设计</li>
+                        <li>解决问题: MES系统接口开发复杂，业务逻辑不清晰；通过原型设计明确需求，提升开发效率与系统可维护性</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">德国标准化工业协议OPCUA国家发明专利</h3>
+                        <span class="text-sm text-gray-500">2024</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: OPC UA + 北京仪综所论证</li>
+                        <li>功能: OPC UA服务器研发、工业协议标准化</li>
+                        <li>解决问题: 工业协议标准化难题；实现国产机床与标准协议的兼容，推动工业数据标准化</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">边缘计算工业大数据分布式数据采集方案</h3>
+                        <span class="text-sm text-gray-500">2024</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: StreamPipes + MQTT + OPC UA + 统一数据物理模型</li>
+                        <li>功能: 边缘计算、分布式数据采集、结构化JSON输出</li>
+                        <li>解决问题: 国产机床协议不统一导致数据孤岛；实现实时标准化采集，为AI模型训练提供高质量数据源</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">北京仪综所实验室国家项目合作</h3>
+                        <span class="text-sm text-gray-500">2024</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 工业数据建模 + 国家高精专项</li>
+                        <li>功能: 国家高精专项《高档数控机床与基础制造装备》合作、工业数据建模</li>
+                        <li>解决问题: 工业数据建模技术难题；通过国家项目合作获得奖金，提升技术积累与行业影响力</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2023">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">AGV工具车通讯协议开发</h3>
+                        <span class="text-sm text-gray-500">2023</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 自定义通讯协议</li>
+                        <li>功能: AGV设备间数据传输、控制指令下发</li>
+                        <li>解决问题: AGV设备通讯协议不统一；制定标准化通讯协议，提升设备互操作性</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2023">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">AGV工具车管控平台开发</h3>
+                        <span class="text-sm text-gray-500">2023</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 管控平台 + 实时监控 + 路径规划</li>
+                        <li>功能: AGV运输自动化管控、可视化监控</li>
+                        <li>解决问题: AGV运输手动调度效率低；实现自动化管控与可视化，提升车间物流效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2023">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">CPS数字孪生工业看板设计与Web开发</h3>
+                        <span class="text-sm text-gray-500">2023</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Vue + Three.js + 实时监控 + 路径规划</li>
+                        <li>功能: CPS数字孪生看板、车间生产状态可视化</li>
+                        <li>解决问题: 车间生产状态可视化困难；实现数字孪生看板，提升生产监控效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2023">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Zoller德国卓勒刀具预调仪文件后处理插件v1.0</h3>
+                        <span class="text-sm text-gray-500">2023</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 文件后处理插件 + 格式转换</li>
+                        <li>功能: 刀具数据文件后处理、格式转换</li>
+                        <li>解决问题: 刀具数据文件处理繁琐；实现自动化后处理，提升工作效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2022">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">机器视觉识别项目-OpenCV工件边缘检测</h3>
+                        <span class="text-sm text-gray-500">2022</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: OpenCV + 几何匹配算法</li>
+                        <li>功能: 工件边缘检测、工件识别</li>
+                        <li>解决问题: 工件识别依赖人工，效率低下；实现自动化视觉检测，提升识别精度与效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2022">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">机器视觉识别项目-YOLO盘库工人辅助PAD</h3>
+                        <span class="text-sm text-gray-500">2022</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: YOLO + OpenCV + 几何匹配</li>
+                        <li>功能: 盘库工人辅助、自动化盘库</li>
+                        <li>解决问题: 盘库工作依赖人工，易出错；实现自动化盘库辅助，提升工作效率与准确性</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2022">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">机器视觉识别项目-Zoller刀具自动识别插件v1.0</h3>
+                        <span class="text-sm text-gray-500">2022</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Zoller刀具识别 + 自动识别 + 参数提取</li>
+                        <li>功能: 刀具自动识别、参数提取</li>
+                        <li>解决问题: 刀具识别依赖人工，效率低下；实现自动化识别，提升工作效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2022">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">机器视觉识别项目-机器人辅助式机床刀盘自动装夹视觉标定</h3>
+                        <span class="text-sm text-gray-500">2022</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 视觉标定算法 + 自动装夹控制</li>
+                        <li>功能: 机器人辅助式机床刀盘自动装夹、视觉标定</li>
+                        <li>解决问题: 刀盘装夹依赖人工，精度难以保证；实现自动化装夹与视觉标定，提升装夹精度与效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2021">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">技术标书撰写与技术报告撰写</h3>
+                        <span class="text-sm text-gray-500">2021</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 技术文档撰写 + 标准化文档体系</li>
+                        <li>功能: 技术标书撰写、技术报告撰写、技术方案整理</li>
+                        <li>解决问题: 技术文档撰写不规范；建立标准化文档体系，提升文档质量与专业性</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2021">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">机床通讯控制边缘服务端程序开发</h3>
+                        <span class="text-sm text-gray-500">2021</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Java + Web开发 + MD5校验 + 在线接口控制</li>
+                        <li>功能: 机床通讯控制、边缘服务端程序、文件MD5校验</li>
+                        <li>解决问题: 机床通讯控制复杂；实现边缘服务端程序，提升通讯控制效率与稳定性</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">集团厂区人脸+口罩疫情检测识别系统</h3>
+                        <span class="text-sm text-gray-500">2020.4 - 2021.2</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">核心开发者 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: YOLOv5 + OpenCV + TensorFlow + 红外测温模块</li>
+                        <li>功能: 人脸检测、口罩识别、红外测温、实时预警、数据统计</li>
+                        <li>项目周期: 2个月 | 成本: 约15万元</li>
+                        <li>解决问题: 疫情期间人工测温效率低、口罩佩戴监管困难；实现非接触式自动检测，识别准确率达95%以上</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">集团厂区电子围栏GIS系统</h3>
+                        <span class="text-sm text-gray-500">2020.4 - 2021.2</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">核心开发者 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: ArcGIS + Vue + Leaflet + GPS定位 + 电子围栏算法</li>
+                        <li>功能: 人员/车辆实时定位、越界报警、轨迹回放、区域管控</li>
+                        <li>项目周期: 3个月 | 成本: 约25万元</li>
+                        <li>解决问题: 厂区安全管理依赖人工巡逻，效率低下；实现智能化区域管控，提升安全响应速度30%以上</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">集团厂区OA通讯平台</h3>
+                        <span class="text-sm text-gray-500">2020.4 - 2021.2</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈开发者 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: SpringBoot + Vue3 + WebSocket + 即时消息 + 语音通话 + 视频会议</li>
+                        <li>功能: 即时消息、语音通话、视频会议、文件共享、组织架构管理、权限控制</li>
+                        <li>项目周期: 4个月 | 成本: 约30万元</li>
+                        <li>解决问题: 企业内部沟通分散，缺乏统一协作平台；实现一站式办公通讯，提升团队协作效率40%以上</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">集团厂区智能配餐系统语音控制终端</h3>
+                        <span class="text-sm text-gray-500">2020.4 - 2021.2</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">核心开发者 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Python + 阿里云语音API + 声纹识别 + TTS语音合成</li>
+                        <li>功能: 语音点餐、智能回复、订单管理、声纹身份验证、无菌送餐通道控制</li>
+                        <li>项目周期: 2个月 | 成本: 约12万元</li>
+                        <li>解决问题: 无菌环境下人工点餐操作不便，送餐效率低；实现语音交互式点餐系统，送餐效率提升50%以上</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">机床管控一体化平台开发v1.0</h3>
+                        <span class="text-sm text-gray-500">2020</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连光洋科技集团</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Java + Web开发 + 通信模组</li>
+                        <li>功能: 机床管控一体化、通信模组开发、文件MD5校验、在线接口控制</li>
+                        <li>项目周期: 12个月 | 成本: 约50万元</li>
+                        <li>解决问题: 文件传输易出错且缺乏追溯；实现一键部署与零配置，减轻实施难度</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">微信商家收银系统开发</h3>
+                        <span class="text-sm text-gray-500">2019</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连微联</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: SpringBoot + Hbuilder + 支付功能</li>
+                        <li>功能: 微信商家收银、支付集成、数据报表</li>
+                        <li>解决问题: 商户收银效率低；实现智能化收银系统，提升交易效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">数字化营销推广平台V2</h3>
+                        <span class="text-sm text-gray-500">2019</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连微联</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: SpringBoot + Vue + H5支付唤起</li>
+                        <li>功能: 数字化营销推广、H5支付、数据报表</li>
+                        <li>解决问题: 商户收银与推广割裂；实现一体化管理，提升交易效率与营销效果</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">海外独立站平台</h3>
+                        <span class="text-sm text-gray-500">2019</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连微联</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: React + NodeJS + SEO优化 + 多语言支持</li>
+                        <li>功能: 海外独立站、电商站点、SEO优化</li>
+                        <li>解决问题: 海外站点加载慢与搜索排名低；优化前端渲染与后端API，提升用户体验</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">爬虫系统开发</h3>
+                        <span class="text-sm text-gray-500">2018</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连微联</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Python + Django</li>
+                        <li>功能: 数据爬取、数据处理、自动化爬取与实时推送</li>
+                        <li>解决问题: 数据采集手动且低效；实现自动化爬取与实时推送</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">微信小程序开发</h3>
+                        <span class="text-sm text-gray-500">2018</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连微联</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Hbuilder</li>
+                        <li>功能: 微信小程序开发、小程序功能集成</li>
+                        <li>解决问题: 小程序开发效率低；实现快速开发与部署</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2017">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">甲方项目原型图绘制</h3>
+                        <span class="text-sm text-gray-500">2017</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连微联</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 墨刀 + Hyper</li>
+                        <li>功能: 甲方项目原型图绘制、需求分析、原型设计</li>
+                        <li>解决问题: 需求沟通不清晰；通过原型设计明确需求，提升开发效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2017">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">微信小程序开发</h3>
+                        <span class="text-sm text-gray-500">2017</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连微联</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Hbuilder</li>
+                        <li>功能: 微信小程序开发、小程序功能集成</li>
+                        <li>解决问题: 小程序开发效率低；实现快速开发与部署</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2016">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">数字化营销推广平台V1</h3>
+                        <span class="text-sm text-gray-500">2016</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师 | 大连微联</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: PHP5.2 + ThinkPHP4 + 微信公众号消息模板</li>
+                        <li>功能: 数字化营销推广平台、落地页、预约系统</li>
+                        <li>解决问题: 营销活动管理分散；实现统一平台，提升推广效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2015">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">GPS组-LBS系统开发</h3>
+                        <span class="text-sm text-gray-500">2015</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">JAVA工程师 | 大连云帆</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: ArcGIS + LBS系统</li>
+                        <li>功能: LBS系统开发、地理信息业务开发</li>
+                        <li>解决问题: 地理信息业务开发复杂；实现LBS系统功能，提升开发效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2015">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">地理信息ArcGIS业务开发</h3>
+                        <span class="text-sm text-gray-500">2015</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">JAVA工程师 | 大连云帆</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: ArcGIS + 地图数据处理</li>
+                        <li>功能: 地理信息业务开发、地图数据处理与展示</li>
+                        <li>解决问题: 地理信息数据处理困难；实现地图业务功能，提升用户体验</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2015">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">安卓测试、Web测试</h3>
+                        <span class="text-sm text-gray-500">2015</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">JAVA工程师 | 大连云帆</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: JQuery + Html5</li>
+                        <li>功能: 安卓测试、Web测试、自动化测试</li>
+                        <li>解决问题: 测试效率低；实现自动化测试，提升测试质量</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2014">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">单片机嵌入式代码测试</h3>
+                        <span class="text-sm text-gray-500">2014</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">嵌入式工程师（实习） | 大连东软</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 单片机 + 嵌入式代码</li>
+                        <li>功能: 嵌入式代码测试、功能验证、性能验证</li>
+                        <li>解决问题: 嵌入式代码测试困难；通过系统化测试验证功能稳定性</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2014">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">原理图绘制</h3>
+                        <span class="text-sm text-gray-500">2014</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">嵌入式工程师（实习） | 大连东软</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 原理图绘制 + 硬件设计</li>
+                        <li>功能: 原理图绘制、硬件设计文档</li>
+                        <li>解决问题: 原理图绘制效率低；实现标准化绘制，提升设计质量</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.12">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大连瀚艺文创 文创衍生品平台（网站+微信小程序） 区块链艺术衍生品</h3>
+                        <span class="text-sm text-gray-500">2018.12 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 网站开发 + 微信小程序 + 区块链技术</li>
+                        <li>功能: 文创衍生品平台、区块链溯源与确权</li>
+                        <li>解决问题: 传统文创产品缺乏数字化溯源机制；通过区块链技术实现艺术衍生品的唯一性认证与防伪</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.12">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">上海房多啦 房屋中介平台（网站+微信小程序）</h3>
+                        <span class="text-sm text-gray-500">2018.12 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: SpringBoot + Redis + MybatisPlus + Thymeleaf + 小程序原生 + Python + FastAPI + MySQL</li>
+                        <li>功能: 房屋中介平台、数据采集、房源展示</li>
+                        <li>解决问题: 房源信息分散且更新不及时；实现房源数据自动化采集与实时展示，提升中介效率</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.12">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">中国农业大学 农业害虫标记平台</h3>
+                        <span class="text-sm text-gray-500">2018.12 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 图像标注 + 数据管理</li>
+                        <li>功能: 农业害虫标记平台、害虫图像标注、数据管理</li>
+                        <li>解决问题: 农业害虫数据缺乏系统化管理；建立害虫标记平台，支持科研数据收集与分析</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.12">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大连东软 Process JS 交互式多媒体教学平台开发</h3>
+                        <span class="text-sm text-gray-500">2018.12 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Process JS + 多媒体交互</li>
+                        <li>功能: 交互式多媒体教学平台、多媒体内容交互、教学管理</li>
+                        <li>解决问题: 传统教学平台交互性不足；通过Process JS实现丰富的多媒体交互体验</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">深圳宝巢科技 饰品盲盒柜（网站+微信小程序）</h3>
+                        <span class="text-sm text-gray-500">2019.1 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 网站开发 + 微信小程序</li>
+                        <li>功能: 饰品盲盒柜系统、盲盒商品管理与销售</li>
+                        <li>解决问题: 传统饰品销售模式单一；通过盲盒模式提升用户参与度与购买体验</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">智能用药平台+智能药盒研发</h3>
+                        <span class="text-sm text-gray-500">2019.1 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: OCR扫描 + 活体检测 + 私有云 + 大数据 + 在线问诊 + 在线导诊 + 微信支付3.0 + HBase + Phoneinx</li>
+                        <li>功能: 智能用药平台、智能药盒、用药提醒、在线问诊、智能导诊</li>
+                        <li>解决问题: 传统用药管理缺乏智能化；实现用药提醒、在线问诊、智能导诊等全流程服务</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">上海房多啦 购房平台端</h3>
+                        <span class="text-sm text-gray-500">2018.1 - 2018.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 用户端 + 经纪人端 + VR看房 + 视频水印切片</li>
+                        <li>功能: 购房平台、VR看房、视频水印保护</li>
+                        <li>解决问题: 购房体验缺乏沉浸感；通过VR看房提升用户体验，视频水印保护房源内容</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2016.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">中灯科技 装灯网——中灯S2N商城架构师</h3>
+                        <span class="text-sm text-gray-500">2016.1 - 2017.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">架构师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Spring + Zookeeper + Dubbo + SpringDataRedis + Solr + AngularJS + JQuery + Freemarker + JUnit + Mybatis + Apache ActiveMQ + 微信支付 + 阿里大鱼短信 + 百度地图API + CAS</li>
+                        <li>功能: Java Spring微服务项目、商户后台、O2O工人端、用户端、运营端、在线微信抢红包、百城千人工长入驻</li>
+                        <li>解决问题: 原有系统架构老旧，扩展性差；通过微服务架构实现系统解耦，提升可扩展性与维护性</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2015.7">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大连微联网络科技 大连优生活平台合作</h3>
+                        <span class="text-sm text-gray-500">2015.7 - 2016.1</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">全栈工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: 电商积分业务 + NFC近场应用 + 蓝牙Beacon + 微信端设备 + 微信卡券通知 + 第三方活动开发</li>
+                        <li>功能: 分销奖励后台、开卡核券、NFC近场应用、微信卡券通知、第三方活动、云监工视频模块</li>
+                        <li>解决问题: 传统营销方式效率低下；通过NFC、微信卡券等技术提升营销效率与用户体验</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2014.6">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大连云帆 大连金州市政GIS项目（云平台端）</h3>
+                        <span class="text-sm text-gray-500">2014.6 - 2015.6</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">软件开发工程师</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>技术栈: Spring + JSP + ExtJS + JQuery + JUnit + Ibatis + ArcGIS平台 + 大连金州市政云图CAD数据 + 大连市金州市政环卫设施GPS数据</li>
+                        <li>功能: 业务单元模块开发、代码审查、前端页面实现、地图图标元素构建、地图标记</li>
+                        <li>解决问题: IE浏览器兼容性与地图元素构建困难；通过Extjs实现跨浏览器兼容与地图元素标准化构建</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="进行中">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">灵境MCP智能AI镜子</h3>
+                        <span class="text-sm text-gray-500">进行中</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">独立开发产品</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>边缘人机交互终端，解决容貌焦虑的问题</li>
+                        <li>软件和嵌入式设备已经实现联调</li>
+                        <li>展示网址，可线下展示</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="进行中">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">智能体RAG-NoteBook</h3>
+                        <span class="text-sm text-gray-500">进行中</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">独立开发产品</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>将作为线下AI讲学的一套教具呈现出来</li>
+                        <li>让学生能够轻松掌握"最小"尺度的向量查询笔记系统开发</li>
+                        <li>可线下展示</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2016.1-至今">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">敏捷开发项目管理系统</h3>
+                        <span class="text-sm text-gray-500">2016.1 - 至今</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">开源项目</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>飞书第一批用户，坚持用飞书进行敏捷团队开发与项目管理</li>
+                        <li>自有敏捷开发项目管理系统开发开源项目</li>
+                        <li>GitHub: https://gitee.com/wulon/mk-teamwork-server</li>
+                        <li>600+ star</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+            <div class="content-en">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-project"></i>
+                    Project Experience
+                </h2>
+                <div class="flex justify-end mb-4">
+                    <button onclick="sortProjects('en', 'desc')" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Newest First</button>
+                    <button onclick="sortProjects('en', 'asc')" class="px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600">Oldest First</button>
+                </div>
+                <div id="project-list-en">
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Local Large Model Deployment and Workflow Solution</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI Feature Data Engineer | Dalian Hunyuan Data</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: PyTorch + TensorFlow + Docker + Workflow Pipeline</li>
+                        <li>Features: Local large model deployment, workflow planning, model isolation and resource scheduling, multi-task parallelism and automatic retry</li>
+                        <li>Problem Solved: High enterprise data privacy and compliance requirements, latency and security risks in cloud deployment; achieved stable local hardware operation, reduced inference latency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Image Generation Model Training System</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI Feature Data Engineer | Dalian Hunyuan Data</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: ComfyUI + Stable Diffusion + LoRA Fine-tuning</li>
+                        <li>Features: Image generation model training, diffusion process parameter optimization, sampling strategy optimization</li>
+                        <li>Problem Solved: Unstable generation quality of general models in specific domains; improved image consistency and detail fidelity through domain adaptation training</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Large Model Fine-tuning Training Solution</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI Feature Data Engineer | Dalian Hunyuan Data</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: TensorFlow + Model Fine-tuning</li>
+                        <li>Features: Large model fine-tuning, model optimization, performance tuning</li>
+                        <li>Problem Solved: Poor performance of large models on specific tasks; improved model performance in specific domains through fine-tuning</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Personality Data Mining System</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI Feature Data Engineer | Dalian Hunyuan Data</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: PyTorch + Pandas + NumPy + Multi-layer Neural Network + Attention Mechanism</li>
+                        <li>Features: Personality data mining, feature engineering, sequence data preprocessing, high-precision classification and prediction</li>
+                        <li>Problem Solved: Difficult feature extraction from unstructured personality data; achieved high-precision classification and prediction, improved accuracy and interpretability of psychological data analysis</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dermatoglyphics Psychology Data Modeling</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI Feature Data Engineer | Dalian Hunyuan Data</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: YOLO + CNN Neural Network + Python + PyTorch</li>
+                        <li>Features: Dermatoglyphics image feature extraction, classification recognition, psychological data modeling</li>
+                        <li>Problem Solved: Complex dermatoglyphics image features and high annotation costs; improved recognition accuracy through deep learning technology, achieved automated feature recognition</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">AI Evaluation Mini-Program</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI Feature Data Engineer | Dalian Hunyuan Data</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: SpringBoot + Vue + Model Inference Interface</li>
+                        <li>Features: AI capability evaluation, data analysis, user management, real-time evaluation</li>
+                        <li>Problem Solved: Manual and inefficient traditional evaluation processes; achieved automated online evaluation, improved user experience and data collection efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2025">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Crawler Data Analysis System</h3>
+                        <span class="text-sm text-gray-500">2025</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">AI Feature Data Engineer | Dalian Hunyuan Data</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Python + DeepSeek R1 + Pandas</li>
+                        <li>Features: Data crawling, semantic analysis, structured output, intelligent filtering</li>
+                        <li>Problem Solved: Difficult large-scale data acquisition and high noise; achieved efficient crawling and intelligent filtering, provided high-quality training data sources</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">MES System Core Business Interface API Development</h3>
+                        <span class="text-sm text-gray-500">2024</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">On-site Business Engineer | Jiangsu CRRC Shenyang Aerospace</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: SpringCloud + Vue + MasterGo</li>
+                        <li>Features: MES system core business interface API development, business principle prototype design</li>
+                        <li>Problem Solved: Complex MES system interface development and unclear business logic; clarified requirements through prototype design, improved development efficiency and system maintainability</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">German Standardized Industrial Protocol OPC UA National Patent</h3>
+                        <span class="text-sm text-gray-500">2024</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: OPC UA + Beijing Institute of Instrumentation and Automation Certification</li>
+                        <li>Features: OPC UA server R&D, industrial protocol standardization</li>
+                        <li>Problem Solved: Industrial protocol standardization challenges; achieved compatibility between domestic machine tools and standard protocols, promoted industrial data standardization</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Edge Computing Industrial Big Data Distributed Data Collection Solution</h3>
+                        <span class="text-sm text-gray-500">2024</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: StreamPipes + MQTT + OPC UA + Unified Data Physical Model</li>
+                        <li>Features: Edge computing, distributed data collection, structured JSON output</li>
+                        <li>Problem Solved: Data silos caused by inconsistent domestic machine tool protocols; achieved real-time standardized collection, provided high-quality data sources for AI model training</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2024">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Beijing Institute of Instrumentation and Automation Laboratory National Project Cooperation</h3>
+                        <span class="text-sm text-gray-500">2024</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Industrial Data Modeling + National High-precision Special Project</li>
+                        <li>Features: National High-precision Special Project "High-end CNC Machine Tools and Basic Manufacturing Equipment" cooperation, industrial data modeling</li>
+                        <li>Problem Solved: Industrial data modeling technical challenges; received bonuses through national project cooperation, improved technical accumulation and industry influence</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2023">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">AGV Tool Cart Communication Protocol Development</h3>
+                        <span class="text-sm text-gray-500">2023</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Custom Communication Protocol</li>
+                        <li>Features: Data transmission between AGV devices, control command issuance</li>
+                        <li>Problem Solved: Inconsistent AGV device communication protocols; established standardized communication protocols, improved device interoperability</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2023">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">AGV Tool Cart Management and Control Platform Development</h3>
+                        <span class="text-sm text-gray-500">2023</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Management Platform + Real-time Monitoring + Path Planning</li>
+                        <li>Features: AGV transportation automated control, visual monitoring</li>
+                        <li>Problem Solved: Low efficiency of manual AGV transportation scheduling; achieved automated control and visualization, improved workshop logistics efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2023">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">CPS Digital Twin Industrial Dashboard Design and Web Development</h3>
+                        <span class="text-sm text-gray-500">2023</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Vue + Three.js + Real-time Monitoring + Path Planning</li>
+                        <li>Features: CPS digital twin dashboard, workshop production status visualization</li>
+                        <li>Problem Solved: Difficult visualization of workshop production status; achieved digital twin dashboard, improved production monitoring efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2023">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Zoller German Tool Presetter File Post-processing Plugin v1.0</h3>
+                        <span class="text-sm text-gray-500">2023</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: File Post-processing Plugin + Format Conversion</li>
+                        <li>Features: Tool data file post-processing, format conversion</li>
+                        <li>Problem Solved: Cumbersome tool data file processing; achieved automated post-processing, improved work efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2022">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Machine Vision Recognition Project - OpenCV Workpiece Edge Detection</h3>
+                        <span class="text-sm text-gray-500">2022</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: OpenCV + Geometric Matching Algorithm</li>
+                        <li>Features: Workpiece edge detection, workpiece recognition</li>
+                        <li>Problem Solved: Manual workpiece recognition with low efficiency; achieved automated visual inspection, improved recognition accuracy and efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2022">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Machine Vision Recognition Project - YOLO Inventory Worker Assistant PAD</h3>
+                        <span class="text-sm text-gray-500">2022</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: YOLO + OpenCV + Geometric Matching</li>
+                        <li>Features: Inventory worker assistance, automated inventory</li>
+                        <li>Problem Solved: Manual inventory work prone to errors; achieved automated inventory assistance, improved work efficiency and accuracy</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2022">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Machine Vision Recognition Project - Zoller Tool Automatic Recognition Plugin v1.0</h3>
+                        <span class="text-sm text-gray-500">2022</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Zoller Tool Recognition + Automatic Recognition + Parameter Extraction</li>
+                        <li>Features: Tool automatic recognition, parameter extraction</li>
+                        <li>Problem Solved: Manual tool recognition with low efficiency; achieved automated recognition, improved work efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2022">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Machine Vision Recognition Project - Robot-assisted Machine Tool Tool Magazine Automatic Clamping Visual Calibration</h3>
+                        <span class="text-sm text-gray-500">2022</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Visual Calibration Algorithm + Automatic Clamping Control</li>
+                        <li>Features: Robot-assisted machine tool tool magazine automatic clamping, visual calibration</li>
+                        <li>Problem Solved: Manual tool magazine clamping with difficult precision guarantee; achieved automated clamping and visual calibration, improved clamping accuracy and efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2021">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Technical Proposal Writing and Technical Report Writing</h3>
+                        <span class="text-sm text-gray-500">2021</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Technical Document Writing + Standardized Documentation System</li>
+                        <li>Features: Technical proposal writing, technical report writing, technical solution organization</li>
+                        <li>Problem Solved: Non-standardized technical document writing; established standardized documentation system, improved document quality and professionalism</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2021">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Machine Tool Communication Control Edge Server Program Development</h3>
+                        <span class="text-sm text-gray-500">2021</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Java + Web Development + MD5 Verification + Online Interface Control</li>
+                        <li>Features: Machine tool communication control, edge server program, file MD5 verification</li>
+                        <li>Problem Solved: Complex machine tool communication control; achieved edge server program, improved communication control efficiency and stability</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Factory Face + Mask Epidemic Detection Recognition System</h3>
+                        <span class="text-sm text-gray-500">2020.4 - 2021.2</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Core Developer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: YOLOv5 + OpenCV + TensorFlow + Infrared Temperature Measurement Module</li>
+                        <li>Features: Face detection, mask recognition, infrared temperature measurement, real-time warning, data statistics</li>
+                        <li>Project Cycle: 2 months | Cost: ~150,000 RMB</li>
+                        <li>Problem Solved: Low efficiency of manual temperature measurement and difficulty in mask supervision during epidemic; achieved contactless automatic detection with recognition accuracy over 95%</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Factory Electronic Fence GIS System</h3>
+                        <span class="text-sm text-gray-500">2020.4 - 2021.2</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Core Developer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: ArcGIS + Vue + Leaflet + GPS Positioning + Electronic Fence Algorithm</li>
+                        <li>Features: Personnel/vehicle real-time positioning, boundary crossing alarm, trajectory playback, regional control</li>
+                        <li>Project Cycle: 3 months | Cost: ~250,000 RMB</li>
+                        <li>Problem Solved: Factory security management relied on manual patrol with low efficiency; achieved intelligent regional control, improving security response speed by over 30%</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Factory OA Communication Platform</h3>
+                        <span class="text-sm text-gray-500">2020.4 - 2021.2</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Developer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: SpringBoot + Vue3 + WebSocket + Instant Messaging + Voice Call + Video Conference</li>
+                        <li>Features: Instant messaging, voice calls, video conferences, file sharing, organizational structure management, permission control</li>
+                        <li>Project Cycle: 4 months | Cost: ~300,000 RMB</li>
+                        <li>Problem Solved: Dispersed internal enterprise communication and lack of unified collaboration platform; achieved one-stop office communication, improving team collaboration efficiency by over 40%</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020.4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Factory Smart Catering System Voice Control Terminal</h3>
+                        <span class="text-sm text-gray-500">2020.4 - 2021.2</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Core Developer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Python + Alibaba Cloud Voice API + Voiceprint Recognition + TTS Voice Synthesis</li>
+                        <li>Features: Voice ordering, intelligent reply, order management, voiceprint identity verification, sterile dining channel control</li>
+                        <li>Project Cycle: 2 months | Cost: ~120,000 RMB</li>
+                        <li>Problem Solved: Inconvenient manual ordering in sterile environment and low delivery efficiency; achieved voice interactive ordering system, improving delivery efficiency by over 50%</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2020">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Machine Tool Management and Control Integrated Platform Development v1.0</h3>
+                        <span class="text-sm text-gray-500">2020</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Guangyang Technology Group</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Java + Web Development + Communication Module</li>
+                        <li>Features: Machine tool management and control integration, communication module development, file MD5 verification, online interface control</li>
+                        <li>Project Cycle: 12 months | Cost: ~500,000 RMB</li>
+                        <li>Problem Solved: File transmission prone to errors and lack of traceability; achieved one-click deployment and zero configuration, reduced implementation difficulty</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">WeChat Merchant Cashier System Development</h3>
+                        <span class="text-sm text-gray-500">2019</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Weilian</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: SpringBoot + Hbuilder + Payment Function</li>
+                        <li>Features: WeChat merchant cashier, payment integration, data reports</li>
+                        <li>Problem Solved: Low merchant cashier efficiency; achieved intelligent cashier system, improved transaction efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Digital Marketing Promotion Platform V2</h3>
+                        <span class="text-sm text-gray-500">2019</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Weilian</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: SpringBoot + Vue + H5 Payment Invocation</li>
+                        <li>Features: Digital marketing promotion, H5 payment, data reports</li>
+                        <li>Problem Solved: Separated merchant cashier and promotion; achieved integrated management, improved transaction efficiency and marketing effectiveness</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Overseas Independent Station Platform</h3>
+                        <span class="text-sm text-gray-500">2019</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Weilian</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: React + NodeJS + SEO Optimization + Multi-language Support</li>
+                        <li>Features: Overseas independent station, e-commerce site, SEO optimization</li>
+                        <li>Problem Solved: Slow loading and low search ranking of overseas sites; optimized front-end rendering and back-end API, improved user experience</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Crawler System Development</h3>
+                        <span class="text-sm text-gray-500">2018</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Weilian</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Python + Django</li>
+                        <li>Features: Data crawling, data processing, automated crawling and real-time push</li>
+                        <li>Problem Solved: Manual and inefficient data collection; achieved automated crawling and real-time push</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">WeChat Mini Program Development</h3>
+                        <span class="text-sm text-gray-500">2018</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Weilian</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Hbuilder</li>
+                        <li>Features: WeChat mini program development, mini program function integration</li>
+                        <li>Problem Solved: Low mini program development efficiency; achieved rapid development and deployment</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2017">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Client Project Prototype Drawing</h3>
+                        <span class="text-sm text-gray-500">2017</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Weilian</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Modao + Hyper</li>
+                        <li>Features: Client project prototype drawing, requirement analysis, prototype design</li>
+                        <li>Problem Solved: Unclear requirement communication; clarified requirements through prototype design, improved development efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2017">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">WeChat Mini Program Development</h3>
+                        <span class="text-sm text-gray-500">2017</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Weilian</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Hbuilder</li>
+                        <li>Features: WeChat mini program development, mini program function integration</li>
+                        <li>Problem Solved: Low mini program development efficiency; achieved rapid development and deployment</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2016">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Digital Marketing Promotion Platform V1</h3>
+                        <span class="text-sm text-gray-500">2016</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer | Dalian Weilian</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: PHP5.2 + ThinkPHP4 + WeChat Public Account Message Template</li>
+                        <li>Features: Digital marketing promotion platform, landing page, reservation system</li>
+                        <li>Problem Solved: Dispersed marketing activity management; achieved unified platform, improved promotion efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2015">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">GPS Group - LBS System Development</h3>
+                        <span class="text-sm text-gray-500">2015</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Java Engineer | Dalian Yunfan</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: ArcGIS + LBS System</li>
+                        <li>Features: LBS system development, geographic information business development</li>
+                        <li>Problem Solved: Complex geographic information business development; achieved LBS system functions, improved development efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2015">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Geographic Information ArcGIS Business Development</h3>
+                        <span class="text-sm text-gray-500">2015</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Java Engineer | Dalian Yunfan</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: ArcGIS + Map Data Processing</li>
+                        <li>Features: Geographic information business development, map data processing and display</li>
+                        <li>Problem Solved: Difficult geographic information data processing; achieved map business functions, improved user experience</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2015">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Android Testing, Web Testing</h3>
+                        <span class="text-sm text-gray-500">2015</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Java Engineer | Dalian Yunfan</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: JQuery + Html5</li>
+                        <li>Features: Android testing, Web testing, automated testing</li>
+                        <li>Problem Solved: Low testing efficiency; achieved automated testing, improved testing quality</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2014">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Single-chip Microcontroller Embedded Code Testing</h3>
+                        <span class="text-sm text-gray-500">2014</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Embedded Engineer (Intern) | Dalian Neusoft</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Single-chip Microcontroller + Embedded Code</li>
+                        <li>Features: Embedded code testing, function verification, performance verification</li>
+                        <li>Problem Solved: Difficult embedded code testing; verified functional stability through systematic testing</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2014">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Schematic Drawing</h3>
+                        <span class="text-sm text-gray-500">2014</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Embedded Engineer (Intern) | Dalian Neusoft</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Schematic Drawing + Hardware Design</li>
+                        <li>Features: Schematic drawing, hardware design documentation</li>
+                        <li>Problem Solved: Low schematic drawing efficiency; achieved standardized drawing, improved design quality</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.12">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dalian Hanyi Wenchuang Cultural and Creative Derivatives Platform (Website + WeChat Mini Program) Blockchain Art Derivatives</h3>
+                        <span class="text-sm text-gray-500">2018.12 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Website Development + WeChat Mini Program + Blockchain Technology</li>
+                        <li>Features: Cultural and creative derivatives platform, blockchain traceability and rights confirmation</li>
+                        <li>Problem Solved: Traditional cultural and creative products lack digital traceability mechanisms; achieved uniqueness authentication and anti-counterfeiting of art derivatives through blockchain technology</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.12">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Shanghai Fangduola Real Estate Agency Platform (Website + WeChat Mini Program)</h3>
+                        <span class="text-sm text-gray-500">2018.12 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: SpringBoot + Redis + MybatisPlus + Thymeleaf + Mini Program Native + Python + FastAPI + MySQL</li>
+                        <li>Features: Real estate agency platform, data collection, property listing display</li>
+                        <li>Problem Solved: Property information is scattered and not updated in time; achieved automated collection and real-time display of property data, improved agency efficiency</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.12">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">China Agricultural University Agricultural Pest Marking Platform</h3>
+                        <span class="text-sm text-gray-500">2018.12 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Image Annotation + Data Management</li>
+                        <li>Features: Agricultural pest marking platform, pest image annotation, data management</li>
+                        <li>Problem Solved: Agricultural pest data lacks systematic management; established pest marking platform, supporting scientific research data collection and analysis</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.12">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dalian Neusoft Process JS Interactive Multimedia Teaching Platform Development</h3>
+                        <span class="text-sm text-gray-500">2018.12 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Process JS + Multimedia Interaction</li>
+                        <li>Features: Interactive multimedia teaching platform, multimedia content interaction, teaching management</li>
+                        <li>Problem Solved: Traditional teaching platforms lack interactivity; achieved rich multimedia interactive experience through Process JS</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Shenzhen Baochao Technology Jewelry Blind Box Cabinet (Website + WeChat Mini Program)</h3>
+                        <span class="text-sm text-gray-500">2019.1 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Website Development + WeChat Mini Program</li>
+                        <li>Features: Jewelry blind box cabinet system, blind box product management and sales</li>
+                        <li>Problem Solved: Traditional jewelry sales model is single; improved user participation and purchase experience through blind box model</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2019.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Smart Medication Platform + Smart Medicine Box R&D</h3>
+                        <span class="text-sm text-gray-500">2019.1 - 2019.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: OCR Scanning + Liveness Detection + Private Cloud + Big Data + Online Consultation + Online Guidance + WeChat Pay 3.0 + HBase + Phoneinx</li>
+                        <li>Features: Smart medication platform, smart medicine box, medication reminder, online consultation, smart guidance</li>
+                        <li>Problem Solved: Traditional medication management lacks intelligence; achieved full-process services such as medication reminders, online consultation, and smart guidance</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2018.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Shanghai Fangduola Home Buying Platform</h3>
+                        <span class="text-sm text-gray-500">2018.1 - 2018.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: User End + Broker End + VR Home Viewing + Video Watermark Slicing</li>
+                        <li>Features: Home buying platform, VR home viewing, video watermark protection</li>
+                        <li>Problem Solved: Home buying experience lacks immersion; improved user experience through VR home viewing, video watermark protects property content</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2016.1">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Zhongdeng Technology Zhuangdeng.com - Zhongdeng S2N Mall Architect</h3>
+                        <span class="text-sm text-gray-500">2016.1 - 2017.12</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Architect</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Spring + Zookeeper + Dubbo + SpringDataRedis + Solr + AngularJS + JQuery + Freemarker + JUnit + Mybatis + Apache ActiveMQ + WeChat Pay + Ali Dayu SMS + Baidu Map API + CAS</li>
+                        <li>Features: Java Spring microservice project, merchant backend, O2O worker end, user end, operation end, online WeChat red packet, hundred cities thousand workers settlement</li>
+                        <li>Problem Solved: Original system architecture is old with poor scalability; achieved system decoupling through microservice architecture, improved scalability and maintainability</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2015.7">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dalian Weilian Network Technology Dalian Yousheng Platform Cooperation</h3>
+                        <span class="text-sm text-gray-500">2015.7 - 2016.1</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Full Stack Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: E-commerce Points Business + NFC Near-field Application + Bluetooth Beacon + WeChat Device + WeChat Coupon Notification + Third-party Activity Development</li>
+                        <li>Features: Distribution reward backend, card opening and coupon verification, NFC near-field application, WeChat coupon notification, third-party activities, cloud supervisor video module</li>
+                        <li>Problem Solved: Traditional marketing methods are inefficient; improved marketing efficiency and user experience through NFC, WeChat coupons and other technologies</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2014.6">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dalian Yunfan Dalian Jinzhou Municipal GIS Project (Cloud Platform End)</h3>
+                        <span class="text-sm text-gray-500">2014.6 - 2015.6</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Software Development Engineer</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Tech stack: Spring + JSP + ExtJS + JQuery + JUnit + Ibatis + ArcGIS Platform + Dalian Jinzhou Municipal Cloud Map CAD Data + Dalian Jinzhou Municipal Sanitation Facility GPS Data</li>
+                        <li>Features: Business unit module development, code review, frontend page implementation, map icon element construction, map marking</li>
+                        <li>Problem Solved: IE browser compatibility and map element construction difficulties; achieved cross-browser compatibility and standardized map element construction through Extjs</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="In Progress">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Lingjing MCP Smart AI Mirror</h3>
+                        <span class="text-sm text-gray-500">In Progress</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Independently Developed Product</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Edge human-computer interaction terminal, solving appearance anxiety problems</li>
+                        <li>Software and embedded devices have achieved joint debugging</li>
+                        <li>Display website, available for offline demonstration</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="In Progress">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Agent RAG-NoteBook</h3>
+                        <span class="text-sm text-gray-500">In Progress</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Independently Developed Product</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Will be presented as a set of teaching aids for offline AI lectures</li>
+                        <li>Let students easily master the development of "minimum" scale vector query note systems</li>
+                        <li>Available for offline demonstration</li>
+                    </ul>
+                </div>
+                <div class="timeline-item project-item" data-date="2016.1-Present">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Agile Development Project Management System</h3>
+                        <span class="text-sm text-gray-500">2016.1 - Present</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">Open Source Project</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>One of the first Feishu users, insisting on using Feishu for agile team development and project management</li>
+                        <li>Self-developed agile development project management system open source project</li>
+                        <li>GitHub: https://gitee.com/wulon/mk-teamwork-server</li>
+                        <li>600+ stars</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 技能证书 -->
+        <div class="section">
+            <div class="content-zh">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-certificate"></i>
+                    技能证书
+                </h2>
+                
+                <!-- 技能可视化图表 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="font-semibold mb-3">技术栈雷达图</h3>
+                        <div id="skillRadar" style="height: 300px;"></div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-3">技能水平分布</h3>
+                        <div id="skillBar" style="height: 300px;"></div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold mb-3">专业技能</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">业务能力</span>
+                                    <span class="text-sm">90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">开发能力</span>
+                                    <span class="text-sm">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">JAVA</span>
+                                    <span class="text-sm">80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Python (Flask, FastAPI)</span>
+                                    <span class="text-sm">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">JS/TS (React, Vue)</span>
+                                    <span class="text-sm">80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">AI大模型框架 (LangChain)</span>
+                                    <span class="text-sm">90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">SpringBoot + MySQL</span>
+                                    <span class="text-sm">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Redis + MongoDB</span>
+                                    <span class="text-sm">80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Streampipline + ELK + MQ + Chroma等</span>
+                                    <span class="text-sm">75%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">CI/CD + Docker + 容器技术</span>
+                                    <span class="text-sm">90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Linux + Nginx + Git</span>
+                                    <span class="text-sm">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-3">个人荣誉</h3>
+                        <div class="timeline-item mb-4">
+                            <h4 class="font-medium text-base mb-2">在校期间荣誉</h4>
+                            <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                                <li>（2010）参加MCM全国大学生数学建模竞赛</li>
+                                <li>（2011）年参加全国大学生电子设计竞赛</li>
+                                <li>（2013）参加东软C语言程序设计大赛-第三名</li>
+                                <li>（2014）获得东软之星、优秀毕业生</li>
+                            </ul>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-medium text-base mb-2">证书及奖项</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="td-icon td-icon-trophy text-blue-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm font-medium">2024年获得国家智能制造软件发明专利一项</p>
+                                        <p class="text-xs text-gray-500">并被收录在十四五专项报告中</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="td-icon td-icon-trophy text-yellow-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm font-medium">2024年度大连市网站开发大赛第二名</p>
+                                        <p class="text-xs text-gray-500">2024年</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="td-icon td-icon-trophy text-yellow-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm font-medium">2024年度大连市AIGC大赛决赛优胜奖</p>
+                                        <p class="text-xs text-gray-500">入围省赛</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="td-icon td-icon-award text-yellow-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm font-medium">大连市2024年网站设计大赛银牌</p>
+                                        <p class="text-xs text-gray-500">2024年</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-en">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-certificate"></i>
+                    Skills & Certificates
+                </h2>
+                
+                <!-- 技能可视化图表 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="font-semibold mb-3">Tech Stack Radar Chart</h3>
+                        <div id="skillRadarEn" style="height: 300px;"></div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-3">Skill Level Distribution</h3>
+                        <div id="skillBarEn" style="height: 300px;"></div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold mb-3">Professional Skills</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Business Capabilities</span>
+                                    <span class="text-sm">90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Development Skills</span>
+                                    <span class="text-sm">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">JAVA</span>
+                                    <span class="text-sm">80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Python (Flask, FastAPI)</span>
+                                    <span class="text-sm">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">JS/TS (React, Vue)</span>
+                                    <span class="text-sm">80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">AI Large Model Framework (LangChain)</span>
+                                    <span class="text-sm">90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">SpringBoot + MySQL</span>
+                                    <span class="text-sm">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Redis + MongoDB</span>
+                                    <span class="text-sm">80%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Streampipline + ELK + MQ + Chroma, etc.</span>
+                                    <span class="text-sm">75%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">CI/CD + Docker + Container Technologies</span>
+                                    <span class="text-sm">90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">Linux + Nginx + Git</span>
+                                    <span class="text-sm">85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-3">Personal Honors</h3>
+                        <div class="timeline-item mb-4">
+                            <h4 class="font-medium text-base mb-2">Honors During School</h4>
+                            <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                                <li>(2010) Participated in MCM National Undergraduate Mathematical Contest in Modeling</li>
+                                <li>(2011) Participated in National Undergraduate Electronic Design Contest</li>
+                                <li>(2013) Participated in Neusoft C Programming Competition - Third Place</li>
+                                <li>(2014) Won Neusoft Star, Outstanding Graduate</li>
+                            </ul>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-medium text-base mb-2">Certificates & Awards</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="td-icon td-icon-trophy text-blue-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm font-medium">National Intelligent Manufacturing Software Invention Patent</p>
+                                        <p class="text-xs text-gray-500">2024 - Included in the 14th Five-Year Plan Special Report</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="td-icon td-icon-trophy text-yellow-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm font-medium">2024 Dalian Website Development Competition Second Place</p>
+                                        <p class="text-xs text-gray-500">2024</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="td-icon td-icon-trophy text-yellow-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm font-medium">2024 Dalian AIGC Competition Finalist Excellence Award</p>
+                                        <p class="text-xs text-gray-500">Advanced to Provincial Competition</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="td-icon td-icon-award text-yellow-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <p class="text-sm font-medium">Dalian 2024 Website Design Competition Silver Medal</p>
+                                        <p class="text-xs text-gray-500">2024</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 教育背景 -->
+        <div class="section">
+            <div class="content-zh">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-education"></i>
+                    教育背景
+                </h2>
+                <div class="timeline-item project-item" data-date="2010.09">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">大连东软信息学院</h3>
+                        <span class="text-sm text-gray-500">2010.09 - 2014.06</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">智能与电子工程学院 | 本科</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>主修课程：嵌入式系统工程</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="content-en">
+                <h2 class="section-title">
+                    <i class="td-icon td-icon-education"></i>
+                    Education Background
+                </h2>
+                <div class="timeline-item project-item" data-date="2010.09">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-semibold text-lg">Dalian Neusoft University of Information</h3>
+                        <span class="text-sm text-gray-500">2010.09 - 2014.06</span>
+                    </div>
+                    <p class="text-gray-600 mb-2">School of Intelligence and Electronic Engineering | Bachelor</p>
+                    <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
+                        <li>Major Courses: Embedded Systems Engineering</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TDesign 脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/tdesign@1.65.1/dist/tdesign.min.js"></script>
+    <script>
+        // 中英文切换功能
+        function switchLanguage(lang) {
+            const zhElements = document.querySelectorAll('.content-zh');
+            const enElements = document.querySelectorAll('.content-en');
+            const langBtns = document.querySelectorAll('.language-btn');
+            
+            // 更新按钮状态
+            langBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // 显示/隐藏对应语言的内容
+            if (lang === 'zh') {
+                zhElements.forEach(el => {
+                    el.style.display = 'block';
+                });
+                enElements.forEach(el => {
+                    el.style.display = 'none';
+                });
+            } else {
+                zhElements.forEach(el => {
+                    el.style.display = 'none';
+                });
+                enElements.forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+            
+            // 重新初始化图表，以适应语言切换后的布局
+            setTimeout(() => {
+                initSkillRadar(lang);
+                initSkillBar(lang);
+            }, 300);
+        }
+        
+        // 页面加载完成后，为技能条添加动画效果
+        window.addEventListener('load', function() {
+            const skillProgresses = document.querySelectorAll('.skill-progress');
+            skillProgresses.forEach(progress => {
+                const width = progress.style.width;
+                progress.style.width = '0';
+                setTimeout(() => {
+                    progress.style.width = width;
+                }, 300);
+            });
+            
+            // 初始化技能雷达图（默认中文）
+            initSkillRadar('zh');
+            
+            // 初始化技能柱状图（默认中文）
+            initSkillBar('zh');
+        });
+        
+        // 初始化技能雷达图 - 使用纯SVG
+        // 初始化技能雷达图 - 使用纯SVG
+        function initSkillRadar() {
+            const dataZh = [
+                { skill: '业务能力', value: 90 },
+                { skill: '开发能力', value: 85 },
+                { skill: 'JAVA', value: 80 },
+                { skill: 'Python', value: 85 },
+                { skill: 'JS/TS', value: 80 },
+                { skill: 'AI大模型', value: 90 }
+            ];
+            
+            const dataEn = [
+                { skill: 'Business', value: 90 },
+                { skill: 'Development', value: 85 },
+                { skill: 'JAVA', value: 80 },
+                { skill: 'Python', value: 85 },
+                { skill: 'JS/TS', value: 80 },
+                { skill: 'AI Models', value: 90 }
+            ];
+            
+            // 初始化中文雷达图
+            const containerZh = document.getElementById('skillRadar');
+            if (containerZh) {
+                createRadarChart(containerZh, dataZh);
+            }
+            
+            // 初始化英文雷达图
+            const containerEn = document.getElementById('skillRadarEn');
+            if (containerEn) {
+                createRadarChart(containerEn, dataEn);
+            }
+        }
+        
+        function createRadarChart(container, data) {
+            const width = container.clientWidth || 400;
+            const height = 300;
+            const radius = Math.min(width, height) / 2 - 40;
+            const cx = width / 2;
+            const cy = height / 2;
+            
+            // 清除容器
+            container.innerHTML = '';
+            
+            // 创建SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', width);
+            svg.setAttribute('height', height);
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            
+            // 绘制网格圆
+            for (let i = 1; i <= 5; i++) {
+                const r = (radius / 5) * i;
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', cx);
+                circle.setAttribute('cy', cy);
+                circle.setAttribute('r', r);
+                circle.setAttribute('fill', 'none');
+                circle.setAttribute('stroke', '#e8e8e8');
+                circle.setAttribute('stroke-width', '1');
+                svg.appendChild(circle);
+                
+                // 添加百分比标签
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', cx + 5);
+                label.setAttribute('y', cy - r);
+                label.setAttribute('text-anchor', 'start');
+                label.setAttribute('dominant-baseline', 'middle');
+                label.setAttribute('font-size', '12px');
+                label.setAttribute('fill', '#999');
+                label.textContent = `${i * 20}%`;
+                svg.appendChild(label);
+            }
+            
+            // 绘制轴线和标签
+            const angleStep = (2 * Math.PI) / data.length;
+            data.forEach((d, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const x = cx + Math.cos(angle) * radius;
+                const y = cy + Math.sin(angle) * radius;
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', cx);
+                line.setAttribute('y1', cy);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#e8e8e8');
+                line.setAttribute('stroke-width', '1');
+                svg.appendChild(line);
+                
+                const labelX = cx + Math.cos(angle) * (radius + 20);
+                const labelY = cy + Math.sin(angle) * (radius + 20);
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', labelX);
+                label.setAttribute('y', labelY);
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('dominant-baseline', 'middle');
+                label.setAttribute('font-size', '12px');
+                label.setAttribute('fill', '#666');
+                label.textContent = d.skill;
+                svg.appendChild(label);
+            });
+            
+            // 绘制雷达区域
+            let points = '';
+            data.forEach((d, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const r = (d.value / 100) * radius;
+                const x = cx + Math.cos(angle) * r;
+                const y = cy + Math.sin(angle) * r;
+                points += (i === 0 ? '' : ' ') + `${x},${y}`;
+            });
+            
+            const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            polygon.setAttribute('points', points);
+            polygon.setAttribute('fill', 'rgba(24, 144, 255, 0.2)');
+            polygon.setAttribute('stroke', '#1890ff');
+            polygon.setAttribute('stroke-width', '2');
+            svg.appendChild(polygon);
+            
+            // 绘制数据点
+            data.forEach((d, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const r = (d.value / 100) * radius;
+                const x = cx + Math.cos(angle) * r;
+                const y = cy + Math.sin(angle) * r;
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '4');
+                circle.setAttribute('fill', '#1890ff');
+                svg.appendChild(circle);
+            });
+            
+            container.appendChild(svg);
+        }
+        
+        // 初始化技能柱状图 - 使用纯SVG
+        function initSkillBar(lang) {
+            const dataZh = [
+                { skill: '业务能力', value: 90 },
+                { skill: '开发能力', value: 85 },
+                { skill: 'JAVA', value: 80 },
+                { skill: 'Python', value: 85 },
+                { skill: 'JS/TS', value: 80 },
+                { skill: 'AI大模型', value: 90 }
+            ];
+            
+            const dataEn = [
+                { skill: 'Business', value: 90 },
+                { skill: 'Development', value: 85 },
+                { skill: 'JAVA', value: 80 },
+                { skill: 'Python', value: 85 },
+                { skill: 'JS/TS', value: 80 },
+                { skill: 'AI Models', value: 90 }
+            ];
+            
+            const data = lang === 'zh' ? dataZh : dataEn;
+            
+            const container = document.getElementById('skillBar');
+            if (!container) return;
+            
+            const width = container.clientWidth || 400;
+            const height = 300;
+            const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
+            
+            // 清除容器
+            container.innerHTML = '';
+            
+            // 创建SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', width);
+            svg.setAttribute('height', height);
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            
+            // 创建坐标轴组
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            g.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+            
+            // 计算条形宽度和间距
+            const barWidth = innerWidth / data.length * 0.6;
+            const spacing = innerWidth / data.length;
+            
+            // 绘制条形和标签
+            data.forEach((d, i) => {
+                const x = margin.left + spacing * i + (spacing - barWidth) / 2;
+                const barHeight = (d.value / 100) * innerHeight;
+                const y = margin.top + innerHeight - barHeight;
+                
+                // 绘制条形
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', x);
+                rect.setAttribute('y', y);
+                rect.setAttribute('width', barWidth);
+                rect.setAttribute('height', barHeight);
+                rect.setAttribute('fill', '#1890ff');
+                rect.setAttribute('rx', '4');
+                
+                // 添加动画
+                rect.style.transition = 'all 1s ease-out';
+                rect.setAttribute('y', margin.top + innerHeight);
+                rect.setAttribute('height', '0');
+                setTimeout(() => {
+                    rect.setAttribute('y', y);
+                    rect.setAttribute('height', barHeight);
+                }, 100);
+                
+                svg.appendChild(rect);
+                
+                // 绘制X轴标签
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', x + barWidth / 2);
+                label.setAttribute('y', margin.top + innerHeight + 20);
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('font-size', '12px');
+                label.setAttribute('fill', '#666');
+                label.textContent = d.skill;
+                svg.appendChild(label);
+                
+                // 绘制顶部数值
+                const valueLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                valueLabel.setAttribute('x', x + barWidth / 2);
+                valueLabel.setAttribute('y', y - 10);
+                valueLabel.setAttribute('text-anchor', 'middle');
+                valueLabel.setAttribute('font-size', '12px');
+                valueLabel.setAttribute('fill', '#666');
+                valueLabel.textContent = `${d.value}%`;
+                svg.appendChild(valueLabel);
+            });
+            
+            // 绘制Y轴
+            const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            yAxis.setAttribute('x1', margin.left);
+            yAxis.setAttribute('y1', margin.top);
+            yAxis.setAttribute('x2', margin.left);
+            yAxis.setAttribute('y2', margin.top + innerHeight);
+            yAxis.setAttribute('stroke', '#e8e8e8');
+            svg.appendChild(yAxis);
+            
+            // 绘制X轴
+            const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            xAxis.setAttribute('x1', margin.left);
+            xAxis.setAttribute('y1', margin.top + innerHeight);
+            xAxis.setAttribute('x2', margin.left + innerWidth);
+            xAxis.setAttribute('y2', margin.top + innerHeight);
+            xAxis.setAttribute('stroke', '#e8e8e8');
+            svg.appendChild(xAxis);
+            
+            container.appendChild(svg);
+        }
+        
+        // 项目排序功能
+        function parseDate(dateStr) {
+            if (!dateStr || dateStr === '进行中' || dateStr === 'In Progress' || dateStr === 'Present') {
+                return new Date().getFullYear() + 1;
+            }
+            if (dateStr.includes('-')) {
+                const parts = dateStr.split('-');
+                const startYear = parseInt(parts[0].trim().split('.')[0]);
+                return startYear;
+            }
+            if (dateStr.includes('.')) {
+                return parseInt(dateStr.split('.')[0]);
+            }
+            if (dateStr.includes('Present') || dateStr.includes('至今')) {
+                return new Date().getFullYear() + 1;
+            }
+            return parseInt(dateStr.trim()) || 0;
+        }
+        
+        function sortProjects(lang, order) {
+            const container = document.getElementById(`project-list-${lang}`);
+            const items = Array.from(container.querySelectorAll('.project-item'));
+            
+            items.sort((a, b) => {
+                const dateA = parseDate(a.dataset.date);
+                const dateB = parseDate(b.dataset.date);
+                return order === 'desc' ? dateB - dateA : dateA - dateB;
+            });
+            
+            items.forEach(item => container.appendChild(item));
+            
+            const buttons = container.parentElement.parentElement.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                btn.classList.add('bg-gray-500', 'hover:bg-gray-600');
+            });
+            event.target.classList.remove('bg-gray-500', 'hover:bg-gray-600');
+            event.target.classList.add('bg-blue-500', 'hover:bg-blue-600');
+        }
+    </script>
+</body>
