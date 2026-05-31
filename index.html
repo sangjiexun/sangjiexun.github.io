@@ -737,7 +737,7 @@
                         <li>主要负责：对线上线下业务的数据采集、标注、数据挖掘，根据规范对相关数据资产进行建模。对数据识别、分类进行机器学习、深度学习。并结合视觉、语义理解大模型及框架增加AI任务的准确性和鲁棒性。</li>
                         <li>参与软件平台开发：区块链金融、区块链供应链、微信小程序等相关业务开发。</li>
                         <li>制定本地大模型部署及工作流方案，覆盖ConfyUI+Stable Diffusion图像生成、TensorFlow微调、PyTorch人格数据挖掘。</li>
-                        <li>独立完成AI测评小程序（SpringBoot+Vue）、皮纹心理学数据建模（YOLO+CNN）、爬虫数据分析系统（Python+DeepSeek）。</li>
+                        <li>独立完成AI测评小程序（SpringBoot+Vue）、指纹类型零样本大模型识别方案（VLM+图像压缩）、爬虫数据分析系统（Python+DeepSeek）。</li>
                         <li>开发爆款文章热点拟合算法，通过用户画像+内容特征+召回+排序的全链路优化，提升内容推荐准确率30%以上。</li>
                         <li>研究分布发布矩阵，实现多平台内容智能分发，提高跨平台曝光率和用户参与度。</li>
                         <li>线上实施要点：</li>
@@ -844,7 +844,7 @@
                         <li>Mainly responsible for: data collection, annotation, and data mining for online and offline business, modeling relevant data assets according to specifications. Performing machine learning and deep learning for data recognition and classification. Combining visual and semantic understanding large models and frameworks to increase AI task accuracy and robustness.</li>
                         <li>Participating in software platform development: blockchain finance, blockchain supply chain, WeChat mini-program and other related business development.</li>
                         <li>Developing local large model deployment and workflow solutions, covering ConfyUI+Stable Diffusion image generation, TensorFlow fine-tuning, PyTorch personality data mining.</li>
-                        <li>Independently completed AI evaluation mini-program (SpringBoot+Vue), dermatoglyphics psychology data modeling (YOLO+CNN), crawler data analysis system (Python+DeepSeek).</li>
+                        <li>Independently completed AI evaluation mini-program (SpringBoot+Vue), zero-shot LLM fingerprint type recognition solution (VLM + image compression), crawler data analysis system (Python+DeepSeek).</li>
                         <li>Developed hot article fitting algorithm, through end-to-end optimization of user portrait + content features + recall + ranking, improved content recommendation accuracy by more than 30%.</li>
                         <li>Researched distributed publishing matrix, realized multi-platform content intelligent distribution, improved cross-platform exposure and user engagement.</li>
                         <li>Online implementation points:</li>
@@ -952,17 +952,19 @@
                         <li>解决问题: 非结构化人格数据特征提取困难；实现高精度分类与预测，提升心理学数据分析的准确性与可解释性</li>
                     </ul>
                 </div>
-                <div class="timeline-item project-item" data-date="2025.01-2025.07">
+                <div class="timeline-item project-item" data-date="2025.10-2026.02">
                     <div class="flex justify-between items-center mb-1">
-                        <h3 class="font-semibold text-lg">皮纹心理学数据建模</h3>
-                        <span class="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded-full">2025.01 - 2025.07</span>
+                        <h3 class="font-semibold text-lg">指纹类型零样本大模型识别方案</h3>
+                        <span class="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded-full">2025.10 - 2026.02</span>
                     </div>
-                    <p class="text-gray-600 mb-2">AI特征数据工程师 | 大连浑元数据</p>
+                    <p class="text-gray-600 mb-2">AI大模型工程师 | 大连浑元数据</p>
                     <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
-                        <li>技术栈: YOLO + CNN神经网络 + Python + PyTorch</li>
-                        <li>功能: 皮纹图像特征提取、分类识别、心理学数据建模</li>
-                        <li>项目周期: 6个月 | 成本: 约32万元</li>
-                        <li>解决问题: 皮纹图像特征复杂、标注成本高；通过深度学习技术提升识别准确率，实现自动化特征识别</li>
+                        <li>技术栈: GPT-4V / Qwen-VL（视觉语言大模型）+ CLIP零样本分类 + WebP/AVIF图像压缩 + Python + FastAPI</li>
+                        <li>方案核心: 采用零样本（Zero-Shot）大模型方案替代传统YOLO+CNN有监督训练，无需大量标注数据即可识别斗型、箕型、弓型等指纹类型</li>
+                        <li>视觉技术: 利用VLM（视觉语言模型）对指纹图像进行语义理解与分类推理，结合Chain-of-Thought提示词引导模型输出结构化识别结果</li>
+                        <li>图像压缩: 引入感知哈希（pHash）去重 + WebP无损压缩，将指纹图像体积压缩60%以上，降低推理延迟与存储成本</li>
+                        <li>项目周期: 5个月 | 成本: 约20万元</li>
+                        <li>解决问题: 传统CNN方案标注成本高、泛化能力弱；零样本方案将冷启动周期从3个月缩短至2周，识别准确率达到92%以上</li>
                     </ul>
                 </div>
                 <div class="timeline-item project-item" data-date="2025.05-2025.08">
@@ -1611,16 +1613,19 @@
                         <li>Problem Solved: Difficult feature extraction from unstructured personality data; achieved high-precision classification and prediction, improved accuracy and interpretability of psychological data analysis</li>
                     </ul>
                 </div>
-                <div class="timeline-item project-item" data-date="2025">
+                <div class="timeline-item project-item" data-date="2025.10-2026.02">
                     <div class="flex justify-between items-center mb-1">
-                        <h3 class="font-semibold text-lg">Dermatoglyphics Psychology Data Modeling</h3>
-                        <span class="text-sm text-gray-500">2025</span>
+                        <h3 class="font-semibold text-lg">Zero-Shot LLM Fingerprint Type Recognition Solution</h3>
+                        <span class="text-sm text-gray-500">2025.10 - 2026.02</span>
                     </div>
-                    <p class="text-gray-600 mb-2">AI Feature Data Engineer | Dalian Hunyuan Data</p>
+                    <p class="text-gray-600 mb-2">AI Large Model Engineer | Dalian Hunyuan Data</p>
                     <ul class="list-disc list-inside text-gray-500 text-sm space-y-1">
-                        <li>Tech stack: YOLO + CNN Neural Network + Python + PyTorch</li>
-                        <li>Features: Dermatoglyphics image feature extraction, classification recognition, psychological data modeling</li>
-                        <li>Problem Solved: Complex dermatoglyphics image features and high annotation costs; improved recognition accuracy through deep learning technology, achieved automated feature recognition</li>
+                        <li>Tech stack: GPT-4V / Qwen-VL (Vision-Language Model) + CLIP Zero-Shot Classification + WebP/AVIF Image Compression + Python + FastAPI</li>
+                        <li>Core Approach: Replaced traditional YOLO+CNN supervised training with a Zero-Shot LLM solution — recognizes whorl, loop, arch and other fingerprint types without large-scale labeled datasets</li>
+                        <li>Vision Technology: Leveraged VLM (Vision-Language Model) for semantic understanding and classification inference on fingerprint images, using Chain-of-Thought prompting to guide structured recognition output</li>
+                        <li>Image Compression: Introduced perceptual hashing (pHash) deduplication + WebP lossless compression, reducing fingerprint image size by 60%+, lowering inference latency and storage costs</li>
+                        <li>Duration: 5 months | Cost: ~200K CNY</li>
+                        <li>Problem Solved: Traditional CNN approach had high annotation costs and weak generalization; zero-shot solution reduced cold-start cycle from 3 months to 2 weeks, achieving 92%+ recognition accuracy</li>
                     </ul>
                 </div>
                 <div class="timeline-item project-item" data-date="2025">
